@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">OpQueueExample</string>
+    <string name="operation_demo_app">Operation Queue Example App</string>
+    <string name="new_operation">New Operation</string>
+    <string name="new_operations">10 New Operations</string>
+    <string name="cancel_operations">Cancel Operations</string>
+    <string name="clear_display">Clear Display</string>
+    <string name="about">About</string>
+</resources>
