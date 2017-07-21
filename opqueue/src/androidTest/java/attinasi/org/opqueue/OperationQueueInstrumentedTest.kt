@@ -6,8 +6,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
-class GatedOperation(i: Int) : Operation() {
+class GatedOperation() : Operation() {
     var canContinue = false
     var completed = false
 
@@ -19,7 +20,7 @@ class GatedOperation(i: Int) : Operation() {
         while (!canContinue) {
             Thread.sleep(10)
 
-            if (isCancelled) break;
+            if (isCancelled) break
         }
         return Result("OK")
     }
@@ -80,13 +81,13 @@ class OperationQueueInstrumentedTest {
     @Test
     @Throws(Exception::class)
     fun addOperations() {
-        val gatedOperation = GatedOperation(0)
+        val gatedOperation = GatedOperation()
         OperationQueue.instance.add(gatedOperation)
         assertEquals(1, OperationQueue.instance.count())
         assertEquals(0, OperationQueue.instance.countPending())
 
         for (i in 1..100) {
-            OperationQueue.instance.add(GatedOperation(i))
+            OperationQueue.instance.add(GatedOperation())
         }
         assertEquals(100, OperationQueue.instance.countPending())
         assertEquals(101, OperationQueue.instance.count())
@@ -103,13 +104,20 @@ class OperationQueueInstrumentedTest {
         for (i in 0..25) {
             operations.add(SequentialOperation(i.toString(), results))
         }
+
         // add them to the queue
         for (op in operations) {
             OperationQueue.instance.add(op)
         }
+
         // wait for them to finish
+        val startTime = Date()
         while (OperationQueue.instance.count() > 0) {
             Thread.sleep(10)
+
+            if (Date().time - startTime.time > 5000) {
+                assertTrue("Too much time waiting!", false )
+            }
         }
 
         // make sure they executed in the correct order by looking at the result-array
@@ -121,7 +129,7 @@ class OperationQueueInstrumentedTest {
     @Test
     @Throws(Exception::class)
     fun cancelOperations() {
-        val gatedOperation = GatedOperation(0)
+        val gatedOperation = GatedOperation()
         val operationQueue = OperationQueue.instance
         operationQueue.add(gatedOperation)
         assertEquals(1, operationQueue.count())
@@ -134,7 +142,7 @@ class OperationQueueInstrumentedTest {
         val operations = ArrayList<GatedOperation>()
 
         for (i in 1..11) {
-            val op = GatedOperation(i)
+            val op = GatedOperation()
             operationQueue.add(op)
             operations.add(op)
         }

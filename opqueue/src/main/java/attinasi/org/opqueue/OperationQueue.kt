@@ -84,7 +84,7 @@ class OperationQueue {
 
     @Synchronized internal fun removeTask(serial: String) {
         if (activeTask?.operation?.operationId.equals(serial)) {
-            activeTask = null;
+            activeTask = null
         } else {
             val wrapper = operations.find { it.operation.operationId == serial }
             if (wrapper != null) {
